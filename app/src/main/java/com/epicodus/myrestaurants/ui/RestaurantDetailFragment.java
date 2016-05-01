@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.epicodus.myrestaurants.Constants;
 import com.epicodus.myrestaurants.R;
 import com.epicodus.myrestaurants.models.Restaurant;
+import com.firebase.client.Firebase;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -56,6 +59,7 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_restaurant_detail, container, false);
         ButterKnife.bind(this, view);
+        mSaveRestaurantButton.setOnClickListener(this);
 
         Picasso.with(view.getContext())
                 .load(mRestaurant.getImageUrl())
@@ -78,6 +82,11 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        if (v == mSaveRestaurantButton) {
+            Firebase ref = new Firebase(Constants.FIREBASE_URL_RESTAURANTS);
+            ref.push().setValue(mRestaurant);
+            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+        }
         if (v == mWebsiteLabel) {
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(mRestaurant.getWebsite()));
